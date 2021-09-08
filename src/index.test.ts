@@ -22,7 +22,16 @@ class Character {
     return !this.isAlive || this.health <= NO_HEALTH
   }
 
-  receiveDamage(damage: number){
+  hit(character: Character, damage: number): void{
+    character.receiveDamage(damage)
+  }
+
+  heal(character: Character, healingAmount: number): void{
+    character.recoverHealth(healingAmount)
+  }
+
+
+  private receiveDamage(damage: number): void{
     const result = this.health - damage
     if(result <= NO_HEALTH) {
       this.die()
@@ -31,23 +40,19 @@ class Character {
     }
   }
 
-  recoverHealth(healingAmount: number){
-    if(this.isDead()) return
-    this.health += healingAmount
-  }
-
-  hit(character: Character, damage: number): void{
-    character.receiveDamage(damage)
-  }
-
-  heal(character: Character, healingAmount: number): void{
-    character.recoverHealth(healingAmount)
+  private recoverHealth(healingAmount: number): void{
+    if (this.isDead()) return
+    const result = this.health + healingAmount
+    if(result >= STARTING_HEALTH){ 
+      this.health = STARTING_HEALTH
+    }else{
+      this.health = result
+    }
   }
 }
 
 
 describe("Character", () => {
-
   it("starts with 1000 health'", () => {
     const character = new Character()
 
@@ -109,10 +114,11 @@ describe("Character", () => {
     const healingAmount = 400;
     const hero = new Character()
     const sidekick = new Character()
+    hero.hit(sidekick, healingAmount)
 
     hero.heal(sidekick, healingAmount)
 
-    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH + healingAmount)
+    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
   })
 
   it("can not heal a dead character", () => {
@@ -125,5 +131,15 @@ describe("Character", () => {
 
     expect(corpse.isDead()).toEqual(true)
     expect(corpse.getHealth()).toEqual(0)
+  })
+
+  it("can not heal above starting health", () => {
+    const healingAmount = 400;
+    const hero = new Character()
+    const sidekick = new Character()
+
+    hero.heal(sidekick, healingAmount)
+
+    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
   })
 })
