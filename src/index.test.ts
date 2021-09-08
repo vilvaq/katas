@@ -1,25 +1,37 @@
+
+
 class Character {
   isAlive = true
+  health = 1000
 
-  getHealth(){
-    return 1000
+  getHealth(): number{
+    return this.health
   }
 
-  getLevel(){
+  getLevel(): number{
     return 1
   }
 
-  die(){
+  die(): void{
     this.isAlive = false
   }
 
-  isDead(){
+  isDead(): boolean{
     return !this.isAlive
+  }
+
+  receiveDamage(damage: number){
+    this.health -= damage
+  }
+
+  hit(character: Character, damage: number): void{
+    character.receiveDamage(damage)
   }
 }
 
 
 describe("Character", () => {
+
   it("starts with 1000 health'", () => {
     const character = new Character()
 
@@ -44,5 +56,16 @@ describe("Character", () => {
     character.die()
 
     expect(character.isDead()).toEqual(true);
+  })
+
+  it("can damage another character", () => {
+    const damage = 400;
+    const STARTING_HEALTH = 1000
+    const hero = new Character()
+    const villain = new Character()
+
+    hero.hit(villain, damage)
+
+    expect(villain.getHealth()).toEqual(STARTING_HEALTH - damage)
   })
 })
