@@ -23,12 +23,16 @@ class Character {
   }
 
   hit(character: Character, damage: number): void{
-    if(character === this) return
+    if(this.isSelf(character)) return
     character.receiveDamage(damage)
   }
 
   heal(character: Character, healingAmount: number): void{
-    character.recoverHealth(healingAmount)
+    if(this.isSelf(character)) character.recoverHealth(healingAmount)
+  }
+
+  private isSelf(character: Character): boolean {
+    return character === this
   }
 
 
@@ -90,6 +94,17 @@ describe("Character", () => {
     expect(villain.getHealth()).toEqual(STARTING_HEALTH - damage)
   })
 
+  it("can not deal damage to self", () => {
+    const villainHit = 100
+    const hero = new Character()
+    const villain = new Character()
+    villain.hit(hero, villainHit)
+
+    hero.hit(hero, 400)
+
+    expect(hero.getHealth()).toEqual(STARTING_HEALTH - villainHit)   
+  })
+
   it("dies if health gets to 0", () => {
     const hero = new Character()
     const villain = new Character()
@@ -111,15 +126,26 @@ describe("Character", () => {
     expect(villain.isDead()).toEqual(true)
   })
 
-  it("can heal another character", () => {
-    const healingAmount = 400;
+  it("can heal itself", () => {
+    const damage = 300
     const hero = new Character()
     const sidekick = new Character()
-    hero.hit(sidekick, healingAmount)
+    sidekick.hit(hero, damage)
 
-    hero.heal(sidekick, healingAmount)
+    hero.heal(hero, 400)
 
-    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
+    expect(hero.getHealth()).toEqual(STARTING_HEALTH)
+  })
+
+  it("can not heal another character", () => {
+    const damage = 300
+    const hero = new Character()
+    const sidekick = new Character()
+    hero.hit(sidekick, damage)
+
+    hero.heal(sidekick, 400)
+
+    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH - damage)
   })
 
   it("can not heal a dead character", () => {
@@ -142,16 +168,5 @@ describe("Character", () => {
     hero.heal(sidekick, healingAmount)
 
     expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
-  })
-
-  it("can not deal damage to self", () => {
-    const villainHit = 100
-    const hero = new Character()
-    const villain = new Character()
-    villain.hit(hero, villainHit)
-
-    hero.hit(hero, 400)
-
-    expect(hero.getHealth()).toEqual(STARTING_HEALTH - villainHit)   
   })
 })
