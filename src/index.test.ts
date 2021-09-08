@@ -23,6 +23,7 @@ class Character {
   }
 
   hit(character: Character, damage: number): void{
+    if(character === this) return
     character.receiveDamage(damage)
   }
 
@@ -141,5 +142,16 @@ describe("Character", () => {
     hero.heal(sidekick, healingAmount)
 
     expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
+  })
+
+  it("can not deal damage to self", () => {
+    const villainHit = 100
+    const hero = new Character()
+    const villain = new Character()
+    villain.hit(hero, villainHit)
+
+    hero.hit(hero, 400)
+
+    expect(hero.getHealth()).toEqual(STARTING_HEALTH - villainHit)   
   })
 })
