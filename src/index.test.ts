@@ -1,4 +1,5 @@
 const STARTING_HEALTH = 1000
+const NO_HEALTH = 0
 
 class Character {
   isAlive = true
@@ -14,22 +15,33 @@ class Character {
 
   die(): void{
     this.isAlive = false
+    this.health = NO_HEALTH
   }
 
   isDead(): boolean{
-    return !this.isAlive
+    return !this.isAlive || this.health <= NO_HEALTH
   }
 
   receiveDamage(damage: number){
-    this.health -= damage
-    if(this.health <= 0) {
-      this.health = 0
-      this.isAlive = false
+    const result = this.health - damage
+    if(result <= NO_HEALTH) {
+      this.die()
+    }else{
+      this.health = result
     }
+  }
+
+  recoverHealth(healingAmount: number){
+    if(this.isDead()) return
+    this.health += healingAmount
   }
 
   hit(character: Character, damage: number): void{
     character.receiveDamage(damage)
+  }
+
+  heal(character: Character, healingAmount: number): void{
+    character.recoverHealth(healingAmount)
   }
 }
 
@@ -91,5 +103,27 @@ describe("Character", () => {
 
     expect(villain.getHealth()).toEqual(0)
     expect(villain.isDead()).toEqual(true)
+  })
+
+  it("can heal another character", () => {
+    const healingAmount = 400;
+    const hero = new Character()
+    const sidekick = new Character()
+
+    hero.heal(sidekick, healingAmount)
+
+    expect(sidekick.getHealth()).toEqual(STARTING_HEALTH + healingAmount)
+  })
+
+  it("can not heal a dead character", () => {
+    const healingAmount = 400;
+    const hero = new Character()
+    const corpse = new Character()
+
+    corpse.die()
+    hero.heal(corpse, healingAmount)
+
+    expect(corpse.isDead()).toEqual(true)
+    expect(corpse.getHealth()).toEqual(0)
   })
 })
