@@ -4,11 +4,20 @@ describe("Character", () => {
 
   describe("creation", () => {
 
-    it("is a mele fighter", () => {
+    it("is a melee fighter by default", () => {
       const MELEE = 'melee'
-      const character = new Character({ attackType: MELEE})
+      const character = new Character()
 
       expect(character.range()).toEqual(MELEE)
+    })
+
+    // Me gusta que no se exponga el elegir el tipo desde el constructor
+    // No me mola sólo depender de protected para ello
+    it("is a ranged fighter", () => {
+      const RANGED = 'ranged'
+      const archer = Character.asRanged()
+
+      expect(archer.range()).toEqual(RANGED)
     })
 
     it("starts with maximum health", () => {
@@ -113,11 +122,10 @@ describe("Character", () => {
     it("hits with melee within range", () => {
       const inRange = 1
       const fatalDamage = 10000
-      const MELEE = 'melee'
-      const hero = new Character({ attackType: MELEE})
+      const knight = new Character()
       const villain = new Character()
 
-      hero.hit(villain, fatalDamage, inRange)
+      knight.hit(villain, fatalDamage, inRange)
 
       expect(villain.isDead()).toEqual(true)
     })
@@ -125,11 +133,32 @@ describe("Character", () => {
     it("does not hit with melee outside of range", () => {
       const outOfRange = 3
       const fatalDamage = 10000
-      const MELEE = 'melee'
-      const hero = new Character({ attackType: MELEE})
+      const knight = new Character()
       const villain = new Character()
 
-      hero.hit(villain, fatalDamage, outOfRange)
+      knight.hit(villain, fatalDamage, outOfRange)
+
+      expect(villain.isDead()).toEqual(false)
+    })
+
+    it("hits ranged within range", () => {
+      const inRange = 20
+      const fatalDamage = 10000
+      const bowman = Character.asRanged()
+      const villain = new Character()
+
+      bowman.hit(villain, fatalDamage, inRange)
+
+      expect(villain.isDead()).toEqual(true)
+    })
+
+    it("does not hit ranged outside of range", () => {
+      const outOfRange = 50
+      const fatalDamage = 10000
+      const bowman = Character.asRanged()
+      const villain = new Character()
+
+      bowman.hit(villain, fatalDamage, outOfRange)
 
       expect(villain.isDead()).toEqual(false)
     })

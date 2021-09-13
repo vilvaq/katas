@@ -7,14 +7,17 @@ const MELEE = {
   attack: 'melee'
 }
 
+const RANGED = {
+  maxRange: 20,
+  attack: 'ranged'
+}
+
 type Characteristics = {
   level?: number;
-  attackType?: string;
 }
 
 const DEFAULTS = {
   level: 1,
-  attackType: MELEE.attack
 }
 
 export class Character {
@@ -22,9 +25,13 @@ export class Character {
   private _level: number;
   private _attackType: string;
 
-  constructor({ level, attackType }: Characteristics = DEFAULTS) {
+  static asRanged(){
+    return new Character().withAttackType(RANGED.attack)
+  }
+
+  constructor({ level }: Characteristics = DEFAULTS) {
     this._level = level || DEFAULTS.level;
-    this._attackType = attackType || DEFAULTS.attackType;
+    this._attackType = MELEE.attack
   }
 
   health(): number {
@@ -58,12 +65,15 @@ export class Character {
       character.recover(amount);
   }
 
+  protected withAttackType(attack: string){
+    this._attackType = attack;
+    return this
+  }
+
   private calculateDamage(base: number, enemy: Character, distance: number): number {
-    if(this.isInRange(distance)) return NO_DAMAGE
-    if (this.isMuchMorePowerfulThan(enemy))
-      return base * 2;
-    if (this.isMuchLessPowerfulThan(enemy))
-      return base / 2;
+    if(this.isNotInRange(distance)) return NO_DAMAGE
+    if (this.isMuchMorePowerfulThan(enemy)) return base * 2;
+    if (this.isMuchLessPowerfulThan(enemy)) return base / 2;
     return base;
   }
 
@@ -89,8 +99,18 @@ export class Character {
     this._health = MAX_HEALTH;
   }
 
-  private isInRange(distance: number): boolean{
-    return distance > MELEE.maxRange
+  private isNotInRange(distance: number): boolean{
+    if(this.isRangedFighter() && distance > RANGED.maxRange) return true
+    if(this.isMeleeFighter() && distance > MELEE.maxRange) return true
+    return false
+  }
+
+  private isRangedFighter(): boolean{
+    return this._attackType === RANGED.attack
+  }
+
+  private isMeleeFighter(): boolean{
+    return this._attackType === MELEE.attack
   }
 
   private isMuchLessPowerfulThan(character: Character): boolean {
