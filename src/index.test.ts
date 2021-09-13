@@ -3,13 +3,12 @@ const DEFAULT_STARTING_LEVEL = 1
 const NO_HEALTH = 0
 
 class Character {
-  level: number = DEFAULT_STARTING_LEVEL
-  health = STARTING_HEALTH
+  private level: number = DEFAULT_STARTING_LEVEL
+  private health = STARTING_HEALTH
 
   constructor(level: number = DEFAULT_STARTING_LEVEL){
     this.level = level
   }
-
 
   getHealth(): number{
     return this.health
@@ -27,23 +26,21 @@ class Character {
     return this.health <= NO_HEALTH
   }
 
-  hit(character: Character, damage: number): void{
-    if(this.isSelf(character)) return
-    character.suffer(damage)
+  hit(enemy: Character, power: number): void{
+    if(this.isSelf(enemy)) return
+    const damage = this.calculateDamage(power, enemy)
+    enemy.suffer(damage)
   }
 
-  heal(character: Character, healingAmount: number): void{
-    if(this.isSelf(character)) character.recover(healingAmount)
+  heal(character: Character, amount: number): void{
+    if(this.isSelf(character)) character.recover(amount)
   }
 
-  private recoverFully(): void{
-    this.health = STARTING_HEALTH
+  private calculateDamage(base: number, enemy: Character): number{
+    if(this.isMuchMorePowerfulThan(enemy)) return base * 2
+    if(this.isMuchLessPowerfulThan(enemy)) return base / 2
+    return base
   }
-
-  private isSelf(character: Character): boolean {
-    return character === this
-  }
-
 
   private suffer(damage: number): void{
     if(this.health <= damage) {
@@ -60,6 +57,22 @@ class Character {
     }else{
       this.health += healing
     }
+  }
+
+  private recoverFully(): void{
+    this.health = STARTING_HEALTH
+  }
+
+  private isMuchLessPowerfulThan(character: Character): boolean{
+    return character.getLevel() - this.getLevel() >= 5
+  }
+
+  private isMuchMorePowerfulThan(character: Character): boolean{
+    return this.getLevel() - character.getLevel() >= 5
+  }
+
+  private isSelf(character: Character): boolean {
+    return character === this
   }
 }
 
@@ -180,5 +193,27 @@ describe("Character", () => {
     hero.heal(sidekick, healingAmount)
 
     expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
+  })
+
+  it("damage is halved if opponent is much more powerful", () => {
+    const baseDamage = 100
+    const halvedDamage = baseDamage / 2
+    const hero = new Character(5)
+    const villain = new Character(10)
+
+    hero.hit(villain, baseDamage)
+
+    expect(villain.getHealth()).toEqual(STARTING_HEALTH - halvedDamage)
+  })
+
+  it("damage is doubled if opponent is much less powerful", () => {
+    const baseDamage = 100
+    const doubledDamage = baseDamage * 2
+    const hero = new Character(20)
+    const villain = new Character(10)
+
+    hero.hit(villain, baseDamage)
+
+    expect(villain.getHealth()).toEqual(STARTING_HEALTH - doubledDamage)
   })
 })
