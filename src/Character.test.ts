@@ -4,7 +4,7 @@ describe("Character", () => {
 
   describe("creation", () => {
 
-    it("is a mele fighter", () =>  {
+    it("is a mele fighter", () => {
       const MELEE_GUILD = 'melee'
       const character = Character.asMeleeFighter()
 
@@ -25,7 +25,7 @@ describe("Character", () => {
 
     it("starts at a defined level", () => {
       const level = 5
-      const character = new Character(level)
+      const character = new Character({ level })
 
       expect(character.level()).toEqual(level);
     })
@@ -70,8 +70,8 @@ describe("Character", () => {
     it("damage is halved if opponent is much more powerful", () => {
       const baseDamage = 100
       const halvedDamage = baseDamage / 2
-      const hero = new Character(5)
-      const villain = new Character(10)
+      const hero = new Character({ level: 5 })
+      const villain = new Character({ level: 10 })
 
       hero.hit(villain, baseDamage)
 
@@ -81,8 +81,8 @@ describe("Character", () => {
     it("damage is doubled if opponent is much less powerful", () => {
       const baseDamage = 100
       const doubledDamage = baseDamage * 2
-      const hero = new Character(20)
-      const villain = new Character(10)
+      const hero = new Character({ level: 20 })
+      const villain = new Character({ level: 10 })
 
       hero.hit(villain, baseDamage)
 

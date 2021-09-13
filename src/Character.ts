@@ -1,21 +1,30 @@
-const STARTING_HEALTH = 1000;
-const DEFAULT_STARTING_LEVEL = 1;
+const MAX_HEALTH = 1000;
 const NO_HEALTH = 0;
 
 const GUILD_MELEE = 'melee'
 
+type Characteristics = {
+  level?: number;
+  guild?: string;
+}
+
+const DEFAULTS = {
+  level: 1,
+  guild: GUILD_MELEE
+}
+
 export class Character {
-  private _health = STARTING_HEALTH;
-  private _level: number = DEFAULT_STARTING_LEVEL;
-  private _guild: string = GUILD_MELEE;
+  private _health = MAX_HEALTH;
+  private _level: number;
+  private _guild: string;
 
   static asMeleeFighter(): Character{
-    return new Character(DEFAULT_STARTING_LEVEL, GUILD_MELEE)
+    return new Character(DEFAULTS)
   }
 
-  constructor(level: number = DEFAULT_STARTING_LEVEL, guild: string = GUILD_MELEE) {
-    this._level = level;
-    this._guild = guild;
+  constructor({ level, guild }: Characteristics = DEFAULTS) {
+    this._level = level || DEFAULTS.level;
+    this._guild = guild || DEFAULTS.guild;
   }
 
   health(): number {
@@ -77,7 +86,7 @@ export class Character {
   }
 
   private recoverFully(): void {
-    this._health = STARTING_HEALTH;
+    this._health = MAX_HEALTH;
   }
 
   private isMuchLessPowerfulThan(character: Character): boolean {
