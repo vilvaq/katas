@@ -5,8 +5,8 @@ const NO_HEALTH = 0;
 const GUILD_MELEE = 'melee'
 
 export class Character {
-  private health = STARTING_HEALTH;
-  private level: number = DEFAULT_STARTING_LEVEL;
+  private _health = STARTING_HEALTH;
+  private _level: number = DEFAULT_STARTING_LEVEL;
   private _guild: string = GUILD_MELEE;
 
   static asMeleeFighter(): Character{
@@ -14,28 +14,28 @@ export class Character {
   }
 
   constructor(level: number = DEFAULT_STARTING_LEVEL, guild: string = GUILD_MELEE) {
-    this.level = level;
+    this._level = level;
     this._guild = guild;
   }
 
-  getHealth(): number {
-    return this.health;
+  health(): number {
+    return this._health;
   }
 
-  getLevel(): number {
-    return this.level;
+  level(): number {
+    return this._level;
   }
 
   guild(): string {
     return this._guild;
   }
 
-  die(): void {
-    this.health = NO_HEALTH;
+  isDead(): boolean {
+    return this._health <= NO_HEALTH;
   }
 
-  isDead(): boolean {
-    return this.health <= NO_HEALTH;
+  die(): void {
+    this._health = NO_HEALTH;
   }
 
   hit(enemy: Character, power: number): void {
@@ -59,33 +59,33 @@ export class Character {
   }
 
   private suffer(damage: number): void {
-    if (this.health <= damage) {
+    if (this._health <= damage) {
       this.die();
     } else {
-      this.health -= damage;
+      this._health -= damage;
     }
   }
 
   private recover(healing: number): void {
     if (this.isDead())
       return;
-    if (this.health >= healing) {
+    if (this._health >= healing) {
       this.recoverFully();
     } else {
-      this.health += healing;
+      this._health += healing;
     }
   }
 
   private recoverFully(): void {
-    this.health = STARTING_HEALTH;
+    this._health = STARTING_HEALTH;
   }
 
   private isMuchLessPowerfulThan(character: Character): boolean {
-    return character.getLevel() - this.getLevel() >= 5;
+    return character.level() - this.level() >= 5;
   }
 
   private isMuchMorePowerfulThan(character: Character): boolean {
-    return this.getLevel() - character.getLevel() >= 5;
+    return this.level() - character.level() >= 5;
   }
 
   private isSelf(character: Character): boolean {

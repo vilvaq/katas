@@ -14,20 +14,20 @@ describe("Character", () => {
     it("starts with maximum health", () => {
       const character = new Character()
 
-      expect(character.getHealth()).toEqual(1000);
+      expect(character.health()).toEqual(1000);
     })
 
     it("starts at first level by default", () => {
       const character = new Character()
 
-      expect(character.getLevel()).toEqual(1);
+      expect(character.level()).toEqual(1);
     })
 
     it("starts at a defined level", () => {
       const level = 5
       const character = new Character(level)
 
-      expect(character.getLevel()).toEqual(level);
+      expect(character.level()).toEqual(level);
     })
 
     it("starts alive", () => {
@@ -54,7 +54,7 @@ describe("Character", () => {
 
       hero.hit(hero, 400)
 
-      expect(hero.getHealth()).toEqual(STARTING_HEALTH - villainHit)
+      expect(hero.health()).toEqual(STARTING_HEALTH - villainHit)
     })
 
     it("damages another character", () => {
@@ -64,7 +64,7 @@ describe("Character", () => {
 
       hero.hit(villain, damage)
 
-      expect(villain.getHealth()).toEqual(STARTING_HEALTH - damage)
+      expect(villain.health()).toEqual(STARTING_HEALTH - damage)
     })
 
     it("damage is halved if opponent is much more powerful", () => {
@@ -75,7 +75,7 @@ describe("Character", () => {
 
       hero.hit(villain, baseDamage)
 
-      expect(villain.getHealth()).toEqual(STARTING_HEALTH - halvedDamage)
+      expect(villain.health()).toEqual(STARTING_HEALTH - halvedDamage)
     })
 
     it("damage is doubled if opponent is much less powerful", () => {
@@ -86,7 +86,7 @@ describe("Character", () => {
 
       hero.hit(villain, baseDamage)
 
-      expect(villain.getHealth()).toEqual(STARTING_HEALTH - doubledDamage)
+      expect(villain.health()).toEqual(STARTING_HEALTH - doubledDamage)
     })
 
     it("dies if health gets to 0", () => {
@@ -105,7 +105,7 @@ describe("Character", () => {
 
       hero.hit(villain, fatalDamage)
 
-      expect(villain.getHealth()).toEqual(0)
+      expect(villain.health()).toEqual(0)
     })
   })
 
@@ -118,7 +118,7 @@ describe("Character", () => {
 
       hero.heal(hero, 400)
 
-      expect(hero.getHealth()).toEqual(STARTING_HEALTH)
+      expect(hero.health()).toEqual(STARTING_HEALTH)
     })
 
     it("can not heal another character", () => {
@@ -129,7 +129,7 @@ describe("Character", () => {
 
       hero.heal(sidekick, 400)
 
-      expect(sidekick.getHealth()).toEqual(STARTING_HEALTH - damage)
+      expect(sidekick.health()).toEqual(STARTING_HEALTH - damage)
     })
 
     it("can not heal a dead character", () => {
@@ -141,7 +141,7 @@ describe("Character", () => {
       hero.heal(corpse, healingAmount)
 
       expect(corpse.isDead()).toEqual(true)
-      expect(corpse.getHealth()).toEqual(0)
+      expect(corpse.health()).toEqual(0)
     })
 
     it("can not heal above starting health", () => {
@@ -151,7 +151,7 @@ describe("Character", () => {
 
       hero.heal(sidekick, healingAmount)
 
-      expect(sidekick.getHealth()).toEqual(STARTING_HEALTH)
+      expect(sidekick.health()).toEqual(STARTING_HEALTH)
     })
   })
 })
