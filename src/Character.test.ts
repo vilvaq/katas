@@ -5,10 +5,10 @@ describe("Character", () => {
   describe("creation", () => {
 
     it("is a mele fighter", () => {
-      const MELEE_GUILD = 'melee'
-      const character = Character.asMeleeFighter()
+      const MELEE = 'melee'
+      const character = new Character({ attackType: MELEE})
 
-      expect(character.guild()).toEqual(MELEE_GUILD)
+      expect(character.range()).toEqual(MELEE)
     })
 
     it("starts with maximum health", () => {

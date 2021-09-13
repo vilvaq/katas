@@ -1,30 +1,26 @@
 const MAX_HEALTH = 1000;
 const NO_HEALTH = 0;
 
-const GUILD_MELEE = 'melee'
+const ATTACK_MELEE = 'melee'
 
 type Characteristics = {
   level?: number;
-  guild?: string;
+  attackType?: string;
 }
 
 const DEFAULTS = {
   level: 1,
-  guild: GUILD_MELEE
+  attackType: ATTACK_MELEE
 }
 
 export class Character {
   private _health = MAX_HEALTH;
   private _level: number;
-  private _guild: string;
+  private _attackType: string;
 
-  static asMeleeFighter(): Character{
-    return new Character(DEFAULTS)
-  }
-
-  constructor({ level, guild }: Characteristics = DEFAULTS) {
+  constructor({ level, attackType }: Characteristics = DEFAULTS) {
     this._level = level || DEFAULTS.level;
-    this._guild = guild || DEFAULTS.guild;
+    this._attackType = attackType || DEFAULTS.attackType;
   }
 
   health(): number {
@@ -35,8 +31,8 @@ export class Character {
     return this._level;
   }
 
-  guild(): string {
-    return this._guild;
+  range(): string {
+    return this._attackType;
   }
 
   isDead(): boolean {
