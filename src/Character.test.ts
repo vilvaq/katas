@@ -107,6 +107,32 @@ describe("Character", () => {
 
       expect(villain.health()).toEqual(0)
     })
+
+    // Asumo que si no se especifica los enemigos están en contacto directo
+
+    it("hits with melee within range", () => {
+      const inRange = 1
+      const fatalDamage = 10000
+      const MELEE = 'melee'
+      const hero = new Character({ attackType: MELEE})
+      const villain = new Character()
+
+      hero.hit(villain, fatalDamage, inRange)
+
+      expect(villain.isDead()).toEqual(true)
+    })
+
+    it("does not hit with melee outside of range", () => {
+      const outOfRange = 3
+      const fatalDamage = 10000
+      const MELEE = 'melee'
+      const hero = new Character({ attackType: MELEE})
+      const villain = new Character()
+
+      hero.hit(villain, fatalDamage, outOfRange)
+
+      expect(villain.isDead()).toEqual(false)
+    })
   })
 
   describe("healing", () => {

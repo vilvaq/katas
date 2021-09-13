@@ -1,7 +1,11 @@
 const MAX_HEALTH = 1000;
 const NO_HEALTH = 0;
+const NO_DAMAGE = 0;
 
-const ATTACK_MELEE = 'melee'
+const MELEE = {
+  maxRange: 2,
+  attack: 'melee'
+}
 
 type Characteristics = {
   level?: number;
@@ -10,7 +14,7 @@ type Characteristics = {
 
 const DEFAULTS = {
   level: 1,
-  attackType: ATTACK_MELEE
+  attackType: MELEE.attack
 }
 
 export class Character {
@@ -43,10 +47,9 @@ export class Character {
     this._health = NO_HEALTH;
   }
 
-  hit(enemy: Character, power: number): void {
-    if (this.isSelf(enemy))
-      return;
-    const damage = this.calculateDamage(power, enemy);
+  hit(enemy: Character, power: number, distance: number = 0): void {
+    if (this.isSelf(enemy)) return;
+    const damage = this.calculateDamage(power, enemy, distance);
     enemy.suffer(damage);
   }
 
@@ -55,7 +58,8 @@ export class Character {
       character.recover(amount);
   }
 
-  private calculateDamage(base: number, enemy: Character): number {
+  private calculateDamage(base: number, enemy: Character, distance: number): number {
+    if(this.isInRange(distance)) return NO_DAMAGE
     if (this.isMuchMorePowerfulThan(enemy))
       return base * 2;
     if (this.isMuchLessPowerfulThan(enemy))
@@ -83,6 +87,10 @@ export class Character {
 
   private recoverFully(): void {
     this._health = MAX_HEALTH;
+  }
+
+  private isInRange(distance: number): boolean{
+    return distance > MELEE.maxRange
   }
 
   private isMuchLessPowerfulThan(character: Character): boolean {
