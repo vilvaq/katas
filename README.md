@@ -1,16 +1,1 @@
-Kata.ts
-=======
-
-Boilerplate for katas, with:
-
-- Node
-- Typescript
-- Jest
-
-## Installation
-
-Run: `npm install`
-
-## Available commands
-
-- Run tests: `npm run test`
+https://github.com/ardalis/kata-catalog/blob/main/katas/RPG%20Combat.md

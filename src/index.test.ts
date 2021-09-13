@@ -2,7 +2,6 @@ const STARTING_HEALTH = 1000
 const NO_HEALTH = 0
 
 class Character {
-  isAlive = true
   health = STARTING_HEALTH
 
   getHealth(): number{
@@ -14,21 +13,24 @@ class Character {
   }
 
   die(): void{
-    this.isAlive = false
     this.health = NO_HEALTH
   }
 
   isDead(): boolean{
-    return !this.isAlive || this.health <= NO_HEALTH
+    return this.health <= NO_HEALTH
   }
 
   hit(character: Character, damage: number): void{
     if(this.isSelf(character)) return
-    character.receiveDamage(damage)
+    character.suffer(damage)
   }
 
   heal(character: Character, healingAmount: number): void{
-    if(this.isSelf(character)) character.recoverHealth(healingAmount)
+    if(this.isSelf(character)) character.recover(healingAmount)
+  }
+
+  private recoverFully(): void{
+    this.health = STARTING_HEALTH
   }
 
   private isSelf(character: Character): boolean {
@@ -36,47 +38,45 @@ class Character {
   }
 
 
-  private receiveDamage(damage: number): void{
-    const result = this.health - damage
-    if(result <= NO_HEALTH) {
+  private suffer(damage: number): void{
+    if(this.health <= damage) {
       this.die()
     }else{
-      this.health = result
+      this.health -= damage
     }
   }
 
-  private recoverHealth(healingAmount: number): void{
+  private recover(healing: number): void{
     if (this.isDead()) return
-    const result = this.health + healingAmount
-    if(result >= STARTING_HEALTH){ 
-      this.health = STARTING_HEALTH
+    if(this.health >= healing){ 
+      this.recoverFully()
     }else{
-      this.health = result
+      this.health += healing
     }
   }
 }
 
 
 describe("Character", () => {
-  it("starts with 1000 health'", () => {
+  it("starts with maximum health'", () => {
     const character = new Character()
 
     expect(character.getHealth()).toEqual(1000);
   })
 
-  it("starts at level 1", () => {
+  it("starts at first level", () => {
     const character = new Character()
 
     expect(character.getLevel()).toEqual(1);
   })
 
-  it("starts being alive", () => {
+  it("starts alive", () => {
     const character = new Character()
 
     expect(character.isDead()).toEqual(false);
   })
   
-  it("can be dead", () => {
+  it("dies", () => {
     const character = new Character()
 
     character.die()
@@ -84,7 +84,7 @@ describe("Character", () => {
     expect(character.isDead()).toEqual(true);
   })
 
-  it("can damage another character", () => {
+  it("damages another character", () => {
     const damage = 400;
     const hero = new Character()
     const villain = new Character()
@@ -94,7 +94,7 @@ describe("Character", () => {
     expect(villain.getHealth()).toEqual(STARTING_HEALTH - damage)
   })
 
-  it("can not deal damage to self", () => {
+  it("does not damage itself", () => {
     const villainHit = 100
     const hero = new Character()
     const villain = new Character()
@@ -111,11 +111,10 @@ describe("Character", () => {
 
     hero.hit(villain, STARTING_HEALTH)
 
-    expect(villain.getHealth()).toEqual(0)
     expect(villain.isDead()).toEqual(true)
   })
 
-  it("dies if health gets bellow 0", () => {
+  it("health can not be bellow 0", () => {
     const fatalDamage = 1500
     const hero = new Character()
     const villain = new Character()
@@ -123,10 +122,9 @@ describe("Character", () => {
     hero.hit(villain, fatalDamage)
 
     expect(villain.getHealth()).toEqual(0)
-    expect(villain.isDead()).toEqual(true)
   })
 
-  it("can heal itself", () => {
+  it("heals itself", () => {
     const damage = 300
     const hero = new Character()
     const sidekick = new Character()
