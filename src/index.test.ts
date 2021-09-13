@@ -1,15 +1,22 @@
 const STARTING_HEALTH = 1000
+const DEFAULT_STARTING_LEVEL = 1
 const NO_HEALTH = 0
 
 class Character {
+  level: number = DEFAULT_STARTING_LEVEL
   health = STARTING_HEALTH
+
+  constructor(level: number = DEFAULT_STARTING_LEVEL){
+    this.level = level
+  }
+
 
   getHealth(): number{
     return this.health
   }
 
   getLevel(): number{
-    return 1
+    return this.level
   }
 
   die(): void{
@@ -64,10 +71,17 @@ describe("Character", () => {
     expect(character.getHealth()).toEqual(1000);
   })
 
-  it("starts at first level", () => {
+  it("starts at first level by default", () => {
     const character = new Character()
 
     expect(character.getLevel()).toEqual(1);
+  })
+
+  it("starts at a defined level", () => {
+    const level = 5
+    const character = new Character(level)
+
+    expect(character.getLevel()).toEqual(level);
   })
 
   it("starts alive", () => {
