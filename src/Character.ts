@@ -1,17 +1,3 @@
-const MAX_HEALTH = 1000;
-const NO_HEALTH = 0;
-const NO_DAMAGE = 0;
-
-const MELEE = {
-  maxRange: 2,
-  attack: 'melee'
-}
-
-const RANGED = {
-  maxRange: 20,
-  attack: 'ranged'
-}
-
 type Characteristics = {
   level?: number;
 }
@@ -124,4 +110,18 @@ export class Character {
   private isSelf(character: Character): boolean {
     return character === this;
   }
+}
+
+const MAX_HEALTH = 1000;
+const NO_HEALTH = 0;
+const NO_DAMAGE = 0;
+
+const MELEE = {
+  maxRange: 2,
+  attack: 'melee'
+}
+
+const RANGED = {
+  maxRange: 20,
+  attack: 'ranged'
 }
