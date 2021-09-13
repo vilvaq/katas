@@ -4,6 +4,13 @@ describe("Character", () => {
 
   describe("creation", () => {
 
+    it("is a mele fighter", () =>  {
+      const MELEE_GUILD = 'melee'
+      const character = Character.asMeleeFighter()
+
+      expect(character.guild()).toEqual(MELEE_GUILD)
+    })
+
     it("starts with maximum health", () => {
       const character = new Character()
 

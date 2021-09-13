@@ -2,12 +2,20 @@ const STARTING_HEALTH = 1000;
 const DEFAULT_STARTING_LEVEL = 1;
 const NO_HEALTH = 0;
 
-export class Character {
-  private level: number = DEFAULT_STARTING_LEVEL;
-  private health = STARTING_HEALTH;
+const GUILD_MELEE = 'melee'
 
-  constructor(level: number = DEFAULT_STARTING_LEVEL) {
+export class Character {
+  private health = STARTING_HEALTH;
+  private level: number = DEFAULT_STARTING_LEVEL;
+  private _guild: string = GUILD_MELEE;
+
+  static asMeleeFighter(): Character{
+    return new Character(DEFAULT_STARTING_LEVEL, GUILD_MELEE)
+  }
+
+  constructor(level: number = DEFAULT_STARTING_LEVEL, guild: string = GUILD_MELEE) {
     this.level = level;
+    this._guild = guild;
   }
 
   getHealth(): number {
@@ -16,6 +24,10 @@ export class Character {
 
   getLevel(): number {
     return this.level;
+  }
+
+  guild(): string {
+    return this._guild;
   }
 
   die(): void {
